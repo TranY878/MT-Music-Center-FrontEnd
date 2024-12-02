@@ -17,6 +17,8 @@ import TeacherDetailsPage from "../pages/TeacherDetailsPage/TeacherDetailsPage";
 import CoursePage from "../pages/CoursePage/CoursePage";
 import CourseDetailsPage from "../pages/CourseDetailsPage/CourseDetailsPage";
 import IntroPage from "../pages/IntroPage/IntroPage";
+import GiftPage from "../pages/GiftPage/GiftPage";
+import FilePage from "../pages/FilePage/FilePage";
 
 export const routes = [
     {
@@ -102,6 +104,16 @@ export const routes = [
     {
         path: '/intro',
         page: IntroPage,
+        isShowHeader: false
+    },
+    {
+        path: '/gift',
+        page: GiftPage,
+        isShowHeader: false
+    },
+    {
+        path: '/file',
+        page: FilePage,
         isShowHeader: false
     },
     {

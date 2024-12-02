@@ -47,6 +47,14 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false, isHidde
         navigate('/intro')
     }
 
+    const handleNavigateGift = () => {
+        navigate('/gift')
+    }
+
+    const handleNavigateFile = () => {
+        navigate('/file')
+    }
+
     const handleLogout = async () => {
         setLoading(true)
         await UserService.logoutUser()
@@ -144,7 +152,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false, isHidde
                             </Col>
                             <Col>
                                 <WrapperTextMenu
-                                    onClick={handleNavigateHome}
+                                    onClick={handleNavigateGift}
                                     style={{ cursor: 'pointer' }}
                                 >
                                     ƯU ĐÃI
@@ -152,7 +160,7 @@ const HeaderComponent = ({ isHiddenSearch = false, isHiddenCart = false, isHidde
                             </Col>
                             <Col>
                                 <WrapperTextMenu
-                                    onClick={handleNavigateHome}
+                                    onClick={handleNavigateFile}
                                     style={{ cursor: 'pointer' }}
                                 >
                                     TÀI LIỆU

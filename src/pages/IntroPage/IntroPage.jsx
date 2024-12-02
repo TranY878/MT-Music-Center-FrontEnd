@@ -52,6 +52,10 @@ const IntroPage = () => {
                             <div style={{ paddingTop: '20px', paddingBottom: '10px', textAlign: 'center', color: '#493628', fontWeight: 'bold', fontSize: '20px', }}>
                                 Guitar Trần
                             </div>
+                            <div style={{ paddingBottom: '10px' }}>• Đơn vị chuyên cung cấp nhạc cụ hàng đầu Cần Thơ.</div>
+                            <div style={{ paddingBottom: '10px' }}>• Là đối tác của trung tâm âm nhạc MT từ những ngày đầu thành lập.</div>
+                            <div style={{ paddingBottom: '10px' }}>• Uy tín, giá tốt luôn lấy chất lượng làm tiêu chí hoàn thiện sản phẩm.</div>
+                            <div style={{ paddingBottom: '10px' }}>• Nhận sửa chữa, phục hồi nhạc cụ.</div>
                         </div>
                     </div>
                 </div>

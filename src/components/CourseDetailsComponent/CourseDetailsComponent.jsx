@@ -6,6 +6,7 @@ import * as CourseService from '../../services/CourseService'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import Loading from '../LoadingComponent/Loading'
+import { convertPrice } from '../../utils'
 
 
 const CourseDetailsComponent = ({ idCourse }) => {
@@ -74,9 +75,10 @@ const CourseDetailsComponent = ({ idCourse }) => {
                         </WrapperCourseName>
                         <div style={{ fontSize: '20px', textAlign: 'center', width: '670px', paddingBottom: '20px' }}>Bộ môn: {courseDetails?.subject}</div>
                         <div style={{ fontSize: '20px', paddingBottom: '20px', textAlign: 'center' }}>Đào tạo cấp độ: {levelName(courseDetails?.level)}</div>
+                        <div style={{ fontSize: '20px', paddingBottom: '20px', textAlign: 'center' }}>Học phí: {convertPrice(courseDetails?.price)}/tháng</div>
                         <div style={{ fontSize: '14px', paddingBottom: '10px', paddingRight: '50px', textAlign: 'right', color: '#59504b', fontWeight: 'bold' }}>
                             <a href='https://www.facebook.com/blogguitarMT/' target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                                Đăng ký <FormOutlined />
+                                Liên hệ đăng ký <FormOutlined />
                             </a>
                         </div>
                         <div style={{ fontSize: '20px' }}>Mục tiêu khóa học</div>

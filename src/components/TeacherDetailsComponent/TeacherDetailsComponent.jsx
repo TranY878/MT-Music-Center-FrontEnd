@@ -62,8 +62,9 @@ const TeacherDetailsComponent = ({ idTeacher }) => {
                                     <FacebookOutlined style={{ color: '#493628' }} />
                                 </a>
                             </div>
+                            <div style={{ fontSize: '20px', paddingBottom: '10px' }}>Địa chỉ: {teacherDetails?.address}</div>
                             <div style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '20px' }}>Tự giới thiệu</div>
-                            <div style={{ borderBottom: '2px solid #000', width: '171px', marginBottom: '10px' }}></div>
+                            <div style={{ borderBottom: '2px solid #000', width: '113px', marginBottom: '10px' }}></div>
                             {/* Sử dụng dangerouslySetInnerHTML để hiển thị nội dung định dạng */}
                             <div style={{ fontSize: '20px', paddingLeft: '20px', width: '800px' }} dangerouslySetInnerHTML={{ __html: teacherDetails?.intro }} />
                         </WrapperTeacherNameDiv>
