@@ -430,11 +430,11 @@ const AdminOrder = () => {
         orders.data.forEach(order => {
             const orderDate = new Date(order.createdAt);
 
+            // Áp dụng điều kiện lọc ngày và trạng thái
             if (
-                order.isPaid ||
-                order.status === 'Đã hoàn tất' &&
-                (!startDate || orderDate >= new Date(startDate)) &&
-                (!endDate || orderDate <= new Date(endDate))
+                (order.isPaid || order.status === 'Đã hoàn tất') &&
+                orderDate >= new Date(startDate) &&
+                orderDate <= new Date(endDate)
             ) {
                 const rawItemsPrice = order.itemsPrice || '0';
                 let price;
@@ -449,6 +449,7 @@ const AdminOrder = () => {
 
                 revenue += price || 0;
 
+                // Đếm số lượng sản phẩm bán ra
                 order.orderItems.forEach(item => {
                     if (productsCount[item.name]) {
                         productsCount[item.name] += item.amount;
@@ -459,11 +460,15 @@ const AdminOrder = () => {
             }
         });
 
-        const productsSold = Object.entries(productsCount).map(([name, amount]) => ({ name, amount }));
+        // Tạo danh sách sản phẩm và sắp xếp theo số lượng bán giảm dần
+        const productsSold = Object.entries(productsCount)
+            .map(([name, amount]) => ({ name, amount }))
+            .sort((a, b) => b.amount - a.amount); // Sắp xếp giảm dần theo `amount`
 
         setRevenueData({ revenue, productsSold });
         setIsRevenueModalOpen(true); // Mở Modal doanh thu sau khi tính toán
     };
+
 
 
     return (
@@ -482,12 +487,13 @@ const AdminOrder = () => {
                     {selectedOrder && (
                         <div>
                             <p><strong>Tên khách hàng:</strong> {selectedOrder.userName}</p>
-                            <p><strong>Số điện thoại:</strong> 0{selectedOrder.phone}</p>
+                            <p><strong>Số điện thoại:</strong> {selectedOrder.phone}</p>
+                            <p><strong>Email:</strong> {selectedOrder.email}</p>
                             <p><strong>Địa chỉ:</strong> {selectedOrder.address}</p>
-                            <p><strong>Thành phố:</strong> {selectedOrder.city}</p>
+                            <p><strong>Thành phố (Tỉnh):</strong> {selectedOrder.city}</p>
                             <p><strong>Thành tiền:</strong> {selectedOrder.itemsPrice}</p>
                             <p><strong>Phí giao hàng:</strong> {convertPrice(selectedOrder.shippingPrice)}</p>
-                            <p><strong >Tổng hóa đơn:</strong><span style={{ color: 'green', fontWeight: 'bold' }}> {convertPrice(selectedOrder.totalPrice)}</span></p>
+                            <p><strong >Tổng hóa đơn:</strong><span style={{ color: '#0057A1', fontWeight: 'bold' }}> {convertPrice(selectedOrder.totalPrice)}</span></p>
                             <p><strong>Phương thức thanh toán:</strong> {[selectedOrder?.paymentMethod]}</p>
 
                             <h3 style={{ fontWeight: 'bold', color: '#cc6600' }}>Sản phẩm trong đơn hàng:</h3>
@@ -526,7 +532,7 @@ const AdminOrder = () => {
                         </div>
                     )}
                 </Modal>
-                <WrapperHeader>Thống kê doanh thu</WrapperHeader>
+                <WrapperHeader>Thống kê tổng doanh thu</WrapperHeader>
 
                 <div style={{ fontWeight: 'bold', fontSize: '18px' }}>
                     Doanh thu: {convertPrice(calculateRevenue(), true)}
@@ -563,18 +569,17 @@ const AdminOrder = () => {
                 >
                     <p><strong>Doanh thu từ {startDate?.format('DD/MM/YYYY')} đến {endDate?.format('DD/MM/YYYY')}:</strong></p>
                     <div style={{ color: '#0057A1', fontWeight: 'bold', textAlign: 'center', fontSize: '24px' }}>{convertPrice(revenueData.revenue, true)}</div>
-                    <h3>Sản phẩm được bán:</h3>
                     <div>
-                        <span style={{ marginLeft: '40px', fontStyle: 'italic' }}>Tên sản phẩm</span>
-                        <span style={{ float: 'right', fontStyle: 'italic' }}>Số lượng</span>
+                        <span style={{ marginLeft: '40px', fontStyle: 'italic', fontWeight: 'bold' }}>Tên sản phẩm</span>
+                        <span style={{ float: 'right', fontStyle: 'italic', fontWeight: 'bold' }}>Số lượng</span>
                     </div>
                     {revenueData.productsSold.length > 0 ? (
                         <ul>
                             {revenueData.productsSold.map((product, index) => (
                                 <li key={index}>
                                     <div style={{ display: 'flex' }}>
-                                        <div style={{ overflowX: 'hidden', overFlow: 'hidden', whiteSpace: 'nowrap', width: '250px' }}>{product.name}</div>
-                                        <div style={{ paddingLeft: '150px' }}>{product.amount}</div>
+                                        <div style={{ overflowX: 'hidden', overFlow: 'hidden', whiteSpace: 'nowrap', width: '600px', border: '1px solid #000' }}> {product.name}</div>
+                                        <div style={{ width: '100px', border: '1px solid #000', textAlign: 'center' }}>{product.amount}</div>
                                     </div>
                                 </li>
                             ))}

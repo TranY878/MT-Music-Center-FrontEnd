@@ -5,12 +5,16 @@ import CardComponent from '../../components/CardComponent/CardComponent'
 import * as ProductService from '../../services/ProductService';
 import * as CourseService from '../../services/CourseService';
 import HeaderComponent from '../../components/HeaderComponent/HeaderComponent';
+import TeacherCardComponent from '../../components/TeacherCardComponent/TeacherCardComponent';
+import * as TeacherService from '../../services/TeacherService';
 
 const CourseDetailsPage = () => {
     const { id } = useParams()
     const [course, setCourse] = useState(null);
     const [products, setProducts] = useState([]);
+    const [teachers, setTeachers] = useState([]);
     const [matchingProducts, setMatchingProducts] = useState([]);
+    const [matchingTeachers, setMatchingTeachers] = useState([]);
 
     // Fetch chi tiết khóa học
     const fetchCourseDetails = async (courseId) => {
@@ -29,6 +33,33 @@ const CourseDetailsPage = () => {
             setProducts(res.data);
         } catch (error) {
             console.error('Lỗi khi lấy danh sách sản phẩm:', error);
+        }
+    };
+
+    // Fetch tất cả giáo viên
+    const fetchTeachers = async () => {
+        try {
+            const res = await TeacherService.getAllTeacher();
+            setTeachers(res.data);
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách giáo viên:', error);
+        }
+    };
+
+    const findMatchingTeachers = () => {
+        if (course && course.subject) {
+            // Lọc giáo viên có nhạc cụ trùng với loại sản phẩm
+            const matched = teachers.filter(teacher => teacher.musicalInstrument === course.subject);
+
+            // Nếu có giáo viên trùng loại nhạc cụ, sắp xếp theo kinh nghiệm
+            if (matched.length > 0) {
+                const sortedMatched = matched.sort((a, b) => b.experience - a.experience);
+                setMatchingTeachers(sortedMatched.slice(0, 4)); // Lấy 4 giáo viên đầu tiên
+            } else {
+                // Nếu không có giáo viên trùng khớp, sắp xếp tất cả giáo viên theo kinh nghiệm
+                const sortedAllTeachers = teachers.sort((a, b) => b.experience - a.experience);
+                setMatchingTeachers(sortedAllTeachers.slice(0, 4)); // Lấy 4 giáo viên có kinh nghiệm cao nhất
+            }
         }
     };
 
@@ -52,12 +83,16 @@ const CourseDetailsPage = () => {
     useEffect(() => {
         fetchCourseDetails(id); // Lấy chi tiết khóa học dựa trên id từ URL
         fetchProducts(); // Lấy tất cả sản phẩm
+        fetchTeachers(); // Lấy tất cả giáo viên
     }, [id]);
 
     useEffect(() => {
         findMatchingProducts(); // Lọc sản phẩm khi khóa học và sản phẩm đã được tải
     }, [course, products]);
 
+    useEffect(() => {
+        findMatchingTeachers(); // Lọc giáo viên khi sản phẩm và giáo viên đã được tải
+    }, [products, teachers]);
 
     return (
         <div style={{ width: '100%', height: '100%', backgroundColor: '#f5f5fa' }}>
@@ -83,6 +118,30 @@ const CourseDetailsPage = () => {
                                         discount={product.discount}
                                         selled={product.selled}
                                         id={product._id}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <div style={{ borderBottom: '2px dashed #000', paddingTop: '10px', width: '1250px', alignItems: 'center', margin: '0 auto' }}></div>
+                    {/* Hiển thị 4 TeacherCardComponent nếu có giáo viên trùng khớp */}
+                    {matchingTeachers.length > 0 && (
+                        <div style={{ marginTop: '10px', paddingLeft: '10px', paddingBottom: '10px' }}>
+                            <h3>Giáo viên liên quan:</h3>
+                            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                                {matchingTeachers.map((teacher) => (
+                                    <TeacherCardComponent
+                                        key={teacher._id}
+                                        musicalInstrument={teacher.musicalInstrument}
+                                        description={teacher.description}
+                                        image={teacher.image}
+                                        name={teacher.name}
+                                        experience={teacher.experience}
+                                        address={teacher.address}
+                                        phone={teacher.phone}
+                                        facebook={teacher.facebook}
+                                        intro={teacher.intro}
+                                        id={teacher._id}
                                     />
                                 ))}
                             </div>

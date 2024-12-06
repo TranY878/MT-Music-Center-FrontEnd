@@ -138,8 +138,14 @@ const MyOrderPage = () => {
                                     {renderProduct(order?.orderItems)}
                                     <WrapperFooter>
                                         <div>
-                                            <span style={{ fontSize: '16px', color: '#0057A1', fontWeight: 'bold' }}>Tổng tiền: </span>
-                                            <span style={{ fontSize: '16px', color: 'rgb(56, 56, 61)', fontWeight: 'bold' }}>{convertPrice(order?.totalPrice)}</span>
+                                            <span style={{ fontSize: '12px', color: 'rgb(56, 56, 61)', fontWeight: 'bold' }}>Tổng đơn hàng: {convertPrice(order?.itemsPrice)} </span>
+                                        </div>
+                                        <div style={{ paddingBottom: '10px' }}>
+                                            <span style={{ fontSize: '12px', fontWeight: 'bold', color: 'rgb(56, 56, 61)' }}>Phí giao hàng: {convertPrice(order?.shippingPrice)}</span>
+                                        </div>
+                                        <div>
+                                            <span style={{ fontSize: '16px', color: 'rgb(56, 56, 61)', fontWeight: 'bold' }}>Tổng tiền: </span>
+                                            <span style={{ fontSize: '16px', color: '#0057A1', fontWeight: 'bold' }}>{convertPrice(order?.totalPrice)}</span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                                             <ButtonComponent

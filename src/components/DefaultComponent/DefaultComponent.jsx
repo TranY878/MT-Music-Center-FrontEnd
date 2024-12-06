@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'; // import useState
 import { useLocation } from 'react-router-dom';
 import { VerticalAlignTopOutlined } from '@ant-design/icons'
 import HeaderComponent from '../HeaderComponent/HeaderComponent';
+import FooterComponent from '../FooterComponent/FooterComponent';
 
 const DefaultComponent = ({ children }) => {
     const { pathname } = useLocation(); // lấy URL hiện tại
@@ -62,6 +63,7 @@ const DefaultComponent = ({ children }) => {
                     <VerticalAlignTopOutlined />
                 </button>
             )}
+            <FooterComponent />
         </div>
     );
 }
