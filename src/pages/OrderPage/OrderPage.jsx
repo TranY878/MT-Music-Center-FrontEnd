@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Checkbox, Form } from 'antd'
+import { Checkbox, Form, Select } from 'antd'
 import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons'
 import { WrapperInputNumber } from '../../components/ProductDetailsComponent/style'
 import { WrapperCountOrder, WrapperInfo, WrapperInfoAddress, WrapperItemOrder, WrapperLeft, WrapperListOrder, WrapperRight, WrapperStyleHeader, WrapperStyleHeaderDelivery, WrapperTotal } from './style'
@@ -23,11 +23,17 @@ const OrderPage = () => {
     const user = useSelector((state) => state.user)
     const [listChecked, setListChecked] = useState([])
     const [delivery, setDelivery] = useState('ghtk')
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
     const [isOpenModalUpdateInfo, setIsOpenModalUpdateInfo] = useState(false)
     const [stateUserDetails, setStateUserDetails] = useState({
         name: '',
         phone: '',
         address: '',
+        city: '',
+        district: '',
+        ward: '',
         city: '',
         email: ''
     })
@@ -88,6 +94,9 @@ const OrderPage = () => {
                 city: user?.city,
                 name: user?.name,
                 address: user?.address,
+                city: user?.city,
+                district: user?.district,
+                ward: user?.ward,
                 phone: user?.phone,
                 email: user?.email,
             })
@@ -157,7 +166,7 @@ const OrderPage = () => {
     const handleAddCard = () => {
         if (!order?.orderItemsSelected?.length) {
             message.error('Vui lòng chọn sản phẩm!')
-        } else if (!user?.phone || !user.address || !user.name || !user.city || !user.email) {
+        } else if (!user?.phone || !user.address || !user.city || !user.district || !user.ward || !user.name || !user.city || !user.email) {
             setIsOpenModalUpdateInfo(true)
         } else {
             navigate('/payment')
@@ -187,6 +196,9 @@ const OrderPage = () => {
             email: '',
             phone: '',
             address: '',
+            city: '',
+            district: '',
+            ward: '',
             isAdmin: false
         })
         form.resetFields()
@@ -194,16 +206,17 @@ const OrderPage = () => {
     }
 
     const handleUpdateInfo = () => {
-        const { name, address, city, phone, email } = stateUserDetails
-        if (name && address && city && phone && email) {
+        const { name, address, city, district, ward, phone, email } = stateUserDetails;
+        if (name && address && city && district && ward && phone && email) {
             mutationUpdate.mutate({ id: user?.id, token: user?.access_token, ...stateUserDetails }, {
                 onSuccess: () => {
-                    dispatch(updateUser({ name, address, city, phone, email }))
-                    setIsOpenModalUpdateInfo(false)
+                    dispatch(updateUser({ name, address, city, district, ward, phone, email }));
+                    setIsOpenModalUpdateInfo(false);
                 }
-            })
+            });
         }
-    }
+    };
+
 
     const handleOnchangeDetails = (e) => {
         setStateUserDetails({
@@ -230,6 +243,38 @@ const OrderPage = () => {
             description: 'Trên 10 triệu',
         },
     ]
+
+    useEffect(() => {
+        // Fetch provinces
+        fetch("https://provinces.open-api.vn/api/?depth=1")
+            .then((res) => res.json())
+            .then((data) => setProvinces(data));
+    }, []);
+
+    const handleProvinceChange = (value) => {
+        const selectedProvince = provinces.find((item) => item.code === value);
+        setStateUserDetails({ ...stateUserDetails, city: selectedProvince.name });
+
+        // Fetch districts
+        fetch(`https://provinces.open-api.vn/api/p/${value}?depth=2`)
+            .then((res) => res.json())
+            .then((data) => setDistricts(data.districts));
+    };
+
+    const handleDistrictChange = (value) => {
+        const selectedDistrict = districts.find((item) => item.code === value);
+        setStateUserDetails({ ...stateUserDetails, district: selectedDistrict.name });
+
+        // Fetch wards
+        fetch(`https://provinces.open-api.vn/api/d/${value}?depth=2`)
+            .then((res) => res.json())
+            .then((data) => setWards(data.wards));
+    };
+
+    const handleWardChange = (value) => {
+        const selectedWard = wards.find((item) => item.code === value);
+        setStateUserDetails({ ...stateUserDetails, ward: selectedWard.name });
+    };
 
     return (
         <div style={{ width: '100%', height: '100vh', backgroundColor: '#f5f5fa' }}>
@@ -311,7 +356,7 @@ const OrderPage = () => {
                                     <span>Tên người nhận: {`${user?.name}`}</span>
                                 </div>
                                 <div style={{ fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '10px' }}>
-                                    <span>Địa chỉ: {`${user?.address} - ${user?.city}`}</span>
+                                    <span>Địa chỉ: {`${user?.address}, ${user?.ward}, ${user?.district}, ${user?.city}`}</span>
                                 </div>
                                 <div style={{ fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '10px' }}>
                                     <span>SĐT: {`${user?.phone}`}</span>
@@ -390,11 +435,45 @@ const OrderPage = () => {
                         <InputComponent value={stateUserDetails.phone} onChange={handleOnchangeDetails} name="phone" />
                     </Form.Item>
                     <Form.Item
-                        label="Thành phố (Tỉnh)"
+                        label="Tỉnh/Thành phố"
                         name="city"
-                        rules={[{ required: true, message: 'Nhập thành phố!' }]}
+                        rules={[{ required: true, message: 'Chọn Tỉnh/Thành phố!' }]}
                     >
-                        <InputComponent value={stateUserDetails.city} onChange={handleOnchangeDetails} name="city" />
+                        <Select onChange={handleProvinceChange}>
+                            {provinces.map((province) => (
+                                <Select.Option key={province.code} value={province.code}>
+                                    {province.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Quận/Huyện"
+                        name="district"
+                        rules={[{ required: true, message: 'Chọn Quận/Huyện!' }]}
+                    >
+                        <Select onChange={handleDistrictChange} disabled={!districts.length}>
+                            {districts.map((district) => (
+                                <Select.Option key={district.code} value={district.code}>
+                                    {district.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Phường/Xã"
+                        name="ward"
+                        rules={[{ required: true, message: 'Chọn Phường/Xã!' }]}
+                    >
+                        <Select onChange={handleWardChange} disabled={!wards.length}>
+                            {wards.map((ward) => (
+                                <Select.Option key={ward.code} value={ward.code}>
+                                    {ward.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         label="Địa chỉ"

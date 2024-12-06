@@ -38,6 +38,8 @@ const PaymentPage = () => {
         phone: '',
         address: '',
         city: '',
+        ward: '',
+        district: '',
         email: ''
     })
 
@@ -53,6 +55,8 @@ const PaymentPage = () => {
         if (isOpenModalUpdateInfo) {
             setStateUserDetails({
                 city: user?.city,
+                ward: user?.ward,
+                district: user?.district,
                 name: user?.name,
                 address: user?.address,
                 phone: user?.phone,
@@ -139,7 +143,7 @@ const PaymentPage = () => {
         if (loading) return; // Kiểm tra nếu đang loading thì không thực hiện thêm
         setLoading(true);
         if (user?.access_token && order?.orderItemsSelected && user?.name
-            && user?.address && user?.phone && user?.city && priceMemo && user?.id) {
+            && user?.address && user?.phone && user?.city && user?.ward && user?.district && priceMemo && user?.id) {
             mutationAddOrder.mutate(
                 {
                     token: user?.access_token,
@@ -148,6 +152,8 @@ const PaymentPage = () => {
                     address: user?.address,
                     phone: user?.phone,
                     city: user?.city,
+                    ward: user?.ward,
+                    district: user?.district,
                     paymentMethod: payment,
                     itemsPrice: priceMemo,
                     shippingPrice: lastShippingPrice,
@@ -166,11 +172,11 @@ const PaymentPage = () => {
     };
 
     const handleUpdateInfo = () => {
-        const { name, address, city, phone, email } = stateUserDetails
-        if (name && address && city && phone && email) {
+        const { name, address, city, ward, district, phone, email } = stateUserDetails
+        if (name && address && city && ward && district && phone && email) {
             mutationUpdate.mutate({ id: user?.id, token: user?.access_token, ...stateUserDetails }, {
                 onSuccess: () => {
-                    dispatch(updateUser({ name, address, city, phone, email }))
+                    dispatch(updateUser({ name, address, city, ward, district, phone, email }))
                     setIsOpenModalUpdateInfo(false)
                 }
             })
@@ -233,6 +239,9 @@ const PaymentPage = () => {
             email: '',
             phone: '',
             address: '',
+            city: '',
+            district: '',
+            ward: '',
             isAdmin: false
         })
         form.resetFields()
@@ -248,6 +257,8 @@ const PaymentPage = () => {
                 address: user?.address,
                 phone: user?.phone,
                 city: user?.city,
+                ward: user?.ward,
+                district: user?.district,
                 paymentMethod: payment,
                 itemsPrice: priceMemo,
                 shippingPrice: lastShippingPrice,
@@ -383,7 +394,7 @@ const PaymentPage = () => {
                                         <span>Tên người nhận: {`${user?.name}`}</span>
                                     </div>
                                     <div style={{ fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '10px' }}>
-                                        <span>Địa chỉ: {`${user?.address} - ${user?.city}`}</span>
+                                        <span>Địa chỉ: {`${user?.address}, ${user?.ward}, ${user?.district}, ${user?.city}`}</span>
                                     </div>
                                     <div style={{ fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '10px' }}>
                                         <span>SĐT: {`${user?.phone}`}</span>

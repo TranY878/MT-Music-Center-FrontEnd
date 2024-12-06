@@ -12,6 +12,7 @@ import Loading from "../LoadingComponent/Loading";
 import { orderContant } from "../../contant";
 import PieChartComponent from "./PieChart";
 import { WrapperHeader } from "../AdminCourse/style";
+import RevenueByMonth from "./RevenueByMonth";
 
 const AdminOrder = () => {
     const [loading, setLoading] = useState(false)
@@ -316,6 +317,8 @@ const AdminOrder = () => {
             userName: order.shippingAddress?.fullName,
             phone: order.shippingAddress?.phone ? order.shippingAddress.phone.toString() : '',
             address: order?.shippingAddress?.address,
+            ward: order?.shippingAddress?.ward,
+            district: order?.shippingAddress?.district,
             city: order?.shippingAddress?.city,
             email: order?.shippingAddress?.email,
             itemsPrice: convertPrice(order?.itemsPrice, true), // Hiển thị định dạng chuỗi "VNĐ" khi cần
@@ -489,8 +492,8 @@ const AdminOrder = () => {
                             <p><strong>Tên khách hàng:</strong> {selectedOrder.userName}</p>
                             <p><strong>Số điện thoại:</strong> {selectedOrder.phone}</p>
                             <p><strong>Email:</strong> {selectedOrder.email}</p>
-                            <p><strong>Địa chỉ:</strong> {selectedOrder.address}</p>
-                            <p><strong>Thành phố (Tỉnh):</strong> {selectedOrder.city}</p>
+                            <p><strong>Địa chỉ:</strong> {selectedOrder.address}, {selectedOrder.ward}, {selectedOrder.district}</p>
+                            <p><strong>Tỉnh (Thành phố):</strong> {selectedOrder.city}</p>
                             <p><strong>Thành tiền:</strong> {selectedOrder.itemsPrice}</p>
                             <p><strong>Phí giao hàng:</strong> {convertPrice(selectedOrder.shippingPrice)}</p>
                             <p><strong >Tổng hóa đơn:</strong><span style={{ color: '#0057A1', fontWeight: 'bold' }}> {convertPrice(selectedOrder.totalPrice)}</span></p>
@@ -543,6 +546,7 @@ const AdminOrder = () => {
                 <div style={{ fontWeight: 'bold', fontSize: '16px', marginTop: '10px' }}>
                     Chuyển khoản: {convertPrice(calculateTransferRevenue(), true)}
                 </div>
+                <RevenueByMonth orders={orders} />
                 <Button onClick={() => setIsDateSelectionModalOpen(true)} style={{ marginTop: '20px' }}>
                     Doanh thu theo thời điểm
                 </Button>

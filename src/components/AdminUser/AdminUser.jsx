@@ -29,6 +29,9 @@ const AdminUser = () => {
         phone: '',
         avatar: '',
         address: '',
+        city: '',
+        district: '',
+        ward: '',
         isAdmin: false
     })
 
@@ -96,6 +99,9 @@ const AdminUser = () => {
                 email: res?.data?.email,
                 phone: res?.data?.phone,
                 address: res?.data?.address,
+                city: res?.data?.city,
+                district: res?.data?.district,
+                ward: res?.data?.ward,
                 avatar: res?.data?.avatar,
                 isAdmin: res?.data?.isAdmin
             })
@@ -295,6 +301,9 @@ const AdminUser = () => {
             email: '',
             phone: '',
             address: '',
+            city: '',
+            district: '',
+            ward: '',
             isAdmin: false
         })
         form.resetFields()
@@ -392,14 +401,6 @@ const AdminUser = () => {
                             rules={[{ required: true, message: 'Nhập số điện thoại!' }]}
                         >
                             <InputComponent value={stateUserDetails.phone} onChange={handleOnchangeDetails} name="phone" />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Địa chỉ"
-                            name="address"
-                            rules={[{ required: true, message: 'Nhập địa chỉ!' }]}
-                        >
-                            <InputComponent value={stateUserDetails.address} onChange={handleOnchangeDetails} name="address" />
                         </Form.Item>
 
                         <Form.Item

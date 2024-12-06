@@ -48,7 +48,7 @@ const CheckMyOrder = () => {
                             <WrapperLabel>Địa chỉ nhận hàng</WrapperLabel>
                             <WrapperContentInfo>
                                 <WrapperTitle className='name-info'>Tên người nhận: {shippingAddress?.fullName}</WrapperTitle>
-                                <WrapperTitle className='address-info'><span>Địa chỉ: </span><span>{shippingAddress?.address} {shippingAddress?.city}</span></WrapperTitle>
+                                <WrapperTitle className='address-info'><span>Địa chỉ: </span><span>{shippingAddress?.address}, {shippingAddress?.ward}, {shippingAddress?.district}, {shippingAddress?.city}</span></WrapperTitle>
                                 <WrapperTitle className='phone-info'><span>Điện thoại: </span>{shippingAddress?.phone}</WrapperTitle>
                             </WrapperContentInfo>
                         </WrapperInfoUser>
